@@ -1,0 +1,16 @@
+# Environment variables
+.env
+.env.*
+
+# Dependencies
+node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode
+.idea
+.DS_Store

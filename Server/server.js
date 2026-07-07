@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { initializeDatabase } from './models/schema.js';
 import authRoutes from './routes/authRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
@@ -14,7 +13,13 @@ const app = express();
 const PORT = process.env.PORT;
 
 // Enable CORS for frontend communication
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://task-mgt-blond.vercel.app"
+  ],
+  credentials: true
+}));
 
 // Body parsing middleware
 app.use(express.json());

@@ -167,9 +167,3 @@ task-manager/
     ├── config/              # Database configuration
     └── server.js            # App entry point
 ```
-
----
-
-## 📄 License
-
-MIT

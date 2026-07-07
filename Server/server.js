@@ -21,7 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Task Manager API', status: 'running' });
+  res.status(200).send('Task Manager API');
 });
 
 // API Routing

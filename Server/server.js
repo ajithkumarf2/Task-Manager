@@ -13,7 +13,7 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Enable CORS with all known origins
+// Enable CORS (Explicit origins are required when credentials are set to true)
 app.use(cors({
   origin: [
     'http://localhost:5173',
@@ -27,7 +27,6 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Root route
 app.get('/', (req, res) => {
   res.status(200).send('Task Manager API is running');
 });

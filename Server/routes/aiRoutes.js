@@ -4,7 +4,7 @@ import { authenticateToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Apply auth middleware to protect the AI suggest route
+// Protect AI suggest route with authentication
 router.post('/suggest', authenticateToken, getAiSuggestion);
 
 export default router;

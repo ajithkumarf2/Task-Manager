@@ -6,8 +6,15 @@ import taskRoutes from './routes/taskRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
+import { initializeDatabase } from './models/schema.js';
 
 dotenv.config();
+
+// Auto-initialize database tables
+initializeDatabase()
+  .then(() => console.log('Database tables verified/created successfully.'))
+  .catch((err) => console.error('Error initializing database tables:', err));
+
 
 const app = express();
 const PORT = process.env.PORT;

@@ -11,7 +11,7 @@ import aiRoutes from './routes/aiRoutes.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 
 // Enable CORS for frontend communication
 app.use(cors());
@@ -37,48 +37,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error occurred' });
 });
 
-// Initialize DB tables then start server (local dev only)
-// Vercel runs as serverless — it imports `app` directly via vercel.json
-if (process.env.VERCEL !== '1') {
-  const startServer = async () => {
-    try {
-      await initializeDatabase();
-      console.log('All database tables verified/created successfully.');
-
-      const server = app.listen(PORT, () => {
-        console.log(`Server successfully started on port ${PORT}`);
-      });
-
-      const shutdown = () => {
-        server.close(() => {
-          console.log('Server shut down gracefully.');
-          process.exit(0);
-        });
-      };
-
-      process.on('SIGTERM', shutdown);
-      process.on('SIGINT', shutdown);
-    } catch (error) {
-      console.error('Unable to initialize database or start server:', error);
-      process.exit(1);
-    }
-  };
-
-  startServer();
-} else {
-  // On Vercel: initialize DB on first request (lazy init)
-  let dbInitialized = false;
-  app.use(async (req, res, next) => {
-    if (!dbInitialized) {
-      try {
-        await initializeDatabase();
-        dbInitialized = true;
-      } catch (err) {
-        console.error('DB init failed:', err.message);
-      }
-    }
-    next();
-  });
-}
-
-export default app;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});

@@ -1,10 +1,10 @@
-# 📋 Task Manager
+#  Task Manager
 
 A full-stack project management application with workspaces, task tracking, analytics, AI-powered task suggestions, and team collaboration.
 
 ---
 
-## 🚀 Features
+##  Features
 
 - **Authentication** — JWT-based login and signup
 - **Workspaces & Projects** — Organize work into projects within a shared workspace
@@ -18,7 +18,7 @@ A full-stack project management application with workspaces, task tracking, anal
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Frontend (`/Client`)
 | Technology | Why |
@@ -47,7 +47,7 @@ A full-stack project management application with workspaces, task tracking, anal
 
 ---
 
-## ⚙️ How to Run Locally
+##  How to Run Locally
 
 ### Prerequisites
 - Node.js v18+
@@ -88,7 +88,7 @@ JWT_SECRET=your_jwt_secret_key
 GEMINI_API_KEY=your_google_gemini_api_key
 ```
 
-> ⚠️ Create a MySQL database named `task_manager` before starting the server. The server auto-creates all tables using Sequelize sync.
+>  Create a MySQL database named `task_manager` before starting the server. The server auto-creates all tables using Sequelize sync.
 
 ```sql
 CREATE DATABASE task_manager;
@@ -127,7 +127,7 @@ The app will open at `http://localhost:5173`.
 
 ---
 
-## 🤖 AI Tools & Resources Used
+##  AI Tools & Resources Used
 
 | Tool / Resource | Usage |
 |---|---|
@@ -138,7 +138,7 @@ The app will open at `http://localhost:5173`.
 
 ---
 
-## ✨ One Thing I Would Improve With More Time
+##  One Thing I Would Improve With More Time
 
 **Real-time Collaboration with WebSockets**
 
@@ -146,7 +146,7 @@ Currently, all updates (new tasks, status changes, member invites) are local to 
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 task-manager/

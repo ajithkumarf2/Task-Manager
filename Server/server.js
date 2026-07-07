@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { initializeDatabase } from './models/schema.js';
 import authRoutes from './routes/authRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
@@ -26,14 +25,8 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Root route
 app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Task Manager API', version: '1.0.0', status: 'running' });
-});
-
-// Health Check
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK' });
+  res.status(200).send('Task Manager API is running');
 });
 
 // API Routing
@@ -49,41 +42,6 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error occurred' });
 });
 
-// ─── Local Development ────────────────────────────────────────────────────────
-if (process.env.NODE_ENV !== 'production') {
-  const startServer = async () => {
-    try {
-      await initializeDatabase();
-      console.log('All database tables verified/created successfully.');
-
-      const server = app.listen(PORT, () => {
-        console.log(`Server successfully started on port ${PORT}`);
-      });
-
-      const shutdown = () => server.close(() => process.exit(0));
-      process.on('SIGTERM', shutdown);
-      process.on('SIGINT', shutdown);
-    } catch (error) {
-      console.error('Unable to start server:', error);
-      process.exit(1);
-    }
-  };
-  startServer();
-} else {
-  // ─── Vercel Serverless: lazy DB init on first request ──────────────────────
-  let dbReady = false;
-  app.use(async (req, res, next) => {
-    if (!dbReady) {
-      try {
-        await initializeDatabase();
-        dbReady = true;
-      } catch (err) {
-        console.error('DB init error:', err.message);
-      }
-    }
-    next();
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
   });
-}
-
-// Required by Vercel — exports app as the serverless request handler
-export default app;

@@ -1,4 +1,3 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -30,21 +29,16 @@ export const getAiSuggestion = async (req, res) => {
       return res.status(400).json({ error: 'Title is required for AI suggestion' });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY?.trim();
 
-    if (!apiKey || apiKey.trim() === '') {
+    if (!apiKey || apiKey === '') {
       console.warn('GEMINI_API_KEY is not defined. Falling back to rule-based mock suggestion.');
       const fallback = getMockSuggestion(title);
       return res.status(200).json(fallback);
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
-      generationConfig: {
-        responseMimeType: 'application/json'
-      }
-    });
+    const { GoogleGenAI } = await import('@google/genai');
+    const ai = new GoogleGenAI({ apiKey });
 
     const prompt = `
 You are a task management AI assistant. Given a task title, your job is to:
@@ -60,8 +54,15 @@ Return a JSON object matching this structure:
 }
 `;
 
-    const result = await model.generateContent(prompt);
-    const textResponse = result.response.text();
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.0-flash',
+      contents: prompt,
+      config: {
+        responseMimeType: 'application/json'
+      }
+    });
+
+    const textResponse = response.text;
     
     // Parse response
     const suggestion = JSON.parse(textResponse);

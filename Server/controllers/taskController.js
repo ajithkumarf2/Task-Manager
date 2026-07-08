@@ -7,6 +7,20 @@ const STATUS_MAP = { TODO: 'To Do', IN_PROGRESS: 'In Progress', DONE: 'Done', to
 const normalizePriority = (val) => PRIORITY_MAP[val] ?? val ?? 'Medium';
 const normalizeStatus = (val) => STATUS_MAP[val] ?? val ?? 'To Do';
 
+const formatDateForDb = (dateVal) => {
+    if (!dateVal) return null;
+    try {
+        const d = new Date(dateVal);
+        if (isNaN(d.getTime())) return null;
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    } catch {
+        return null;
+    }
+};
+
 export const getTasks = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -47,7 +61,7 @@ export const createTask = async (req, res) => {
             [
                 title,
                 description || null,
-                dueDate || null,
+                formatDateForDb(dueDate),
                 normalizePriority(priority),
                 normalizeStatus(status),
                 type || 'TASK',
@@ -84,7 +98,7 @@ export const updateTask = async (req, res) => {
             [
                 title !== undefined ? title : task.title,
                 description !== undefined ? description : task.description,
-                dueDate !== undefined ? (dueDate || null) : task.dueDate,
+                dueDate !== undefined ? formatDateForDb(dueDate) : task.dueDate,
                 priority !== undefined ? normalizePriority(priority) : task.priority,
                 status !== undefined ? normalizeStatus(status) : task.status,
                 type !== undefined ? type : task.type,

@@ -1,5 +1,20 @@
 import db from '../config/db.js';
 
+const formatDateForDb = (dateVal) => {
+    if (!dateVal) return null;
+    try {
+        const d = new Date(dateVal);
+        if (isNaN(d.getTime())) return null;
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    } catch {
+        return null;
+    }
+};
+
+
 export const getProjects = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -55,8 +70,8 @@ export const createProject = async (req, res) => {
                 description || null,
                 status || 'Planning',
                 priority || 'Medium',
-                startDate || null,
-                endDate || null,
+                formatDateForDb(startDate),
+                formatDateForDb(endDate),
                 projectLead || null,
                 teamMembers || null,
                 userId
@@ -98,8 +113,8 @@ export const updateProject = async (req, res) => {
                 description !== undefined ? description : p.description,
                 status !== undefined ? status : p.status,
                 priority !== undefined ? priority : p.priority,
-                startDate !== undefined ? (startDate || null) : p.startDate,
-                endDate !== undefined ? (endDate || null) : p.endDate,
+                startDate !== undefined ? formatDateForDb(startDate) : p.startDate,
+                endDate !== undefined ? formatDateForDb(endDate) : p.endDate,
                 projectLead !== undefined ? (projectLead || null) : p.projectLead,
                 teamMembers !== undefined ? (teamMembers || null) : p.teamMembers,
                 id

@@ -3,6 +3,7 @@ import { XIcon } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { createProject } from "../features/workspaceSlice";
 import { toast } from "react-hot-toast";
+import { api } from "../context/AuthContext";
 
 const CreateProjectDialog = ({ isDialogOpen, setIsDialogOpen }) => {
 
@@ -21,6 +22,31 @@ const CreateProjectDialog = ({ isDialogOpen, setIsDialogOpen }) => {
     });
 
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isGeneratingAi, setIsGeneratingAi] = useState(false);
+
+    const handleAiSuggest = async () => {
+        if (!formData.name.trim()) {
+            toast.error("Please enter a project name first.");
+            return;
+        }
+        setIsGeneratingAi(true);
+        const toastId = toast.loading("AI is generating description & priority...");
+        try {
+            const response = await api.post("/ai/suggest", { name: formData.name, type: "project" });
+            const { description, priority } = response.data;
+            setFormData(prev => ({
+                ...prev,
+                description: description || prev.description,
+                priority: priority ? priority.toUpperCase() : prev.priority
+            }));
+            toast.success("AI suggestion applied!", { id: toastId });
+        } catch (error) {
+            console.error("AI suggestion error:", error);
+            toast.error(error.response?.data?.error || "AI Suggestion failed.", { id: toastId });
+        } finally {
+            setIsGeneratingAi(false);
+        }
+    };
     const dispatch = useDispatch();
 
     const handleSubmit = async (e) => {
@@ -90,6 +116,16 @@ const CreateProjectDialog = ({ isDialogOpen, setIsDialogOpen }) => {
                     <div>
                         <label className="block text-sm mb-1">Description</label>
                         <textarea value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} placeholder="Describe your project" className="w-full px-3 py-2 rounded dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 mt-1 text-zinc-900 dark:text-zinc-200 text-sm h-20" />
+                        <div className="flex justify-end pt-1">
+                            <button
+                                type="button"
+                                onClick={handleAiSuggest}
+                                disabled={isGeneratingAi || !formData.name.trim()}
+                                className="px-3 py-1 text-xs bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 rounded-md font-semibold border border-blue-200 dark:border-blue-900/60 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition disabled:opacity-50 flex items-center gap-1 cursor-pointer"
+                            >
+                                {isGeneratingAi ? "Generating..." : "⚡ AI Suggest"}
+                            </button>
+                        </div>
                     </div>
 
                     {/* Status & Priority */}

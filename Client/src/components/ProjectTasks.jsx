@@ -83,18 +83,15 @@ const ProjectTasks = ({ tasks }) => {
         try {
             toast.loading("Updating status...");
 
-            //  Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-
             let updatedTask = structuredClone(tasks.find((t) => t.id === taskId));
             updatedTask.status = newStatus;
-            dispatch(updateTask(updatedTask));
+            await dispatch(updateTask(updatedTask)).unwrap();
 
             toast.dismissAll();
             toast.success("Task status updated successfully");
         } catch (error) {
             toast.dismissAll();
-            toast.error(error?.response?.data?.message || error.message);
+            toast.error(error?.response?.data?.message || error.message || "Failed to update status");
         }
     };
 

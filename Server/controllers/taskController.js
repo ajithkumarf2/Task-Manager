@@ -102,7 +102,7 @@ export const updateTask = async (req, res) => {
                 priority !== undefined ? normalizePriority(priority) : task.priority,
                 status !== undefined ? normalizeStatus(status) : task.status,
                 type !== undefined ? type : task.type,
-                userId !== undefined ? userId : task.userId,
+                userId ? userId : task.userId,
                 projectId !== undefined ? (projectId || null) : task.projectId,
                 id
             ]
